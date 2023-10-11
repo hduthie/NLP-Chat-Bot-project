@@ -1,9 +1,24 @@
+import json
+import pandas as pd
+
+
 def load_json(file):
 
     with open(file, 'r') as json_file:
         data = json.load(json_file)
     
     return data
+
+
+def service_mapping(df):
+    service_mapping = {
+    'restaurant': 0,
+    'hotel': 1,
+    }
+    # Use the replace method to update the 'Service' column
+    df['Service'] = df['Service'].apply(lambda x: 0 if x == 'restaurant' else (1 if x == 'hotel' else 2))
+
+    return df
 
 
 def utterances_domain_to_df(data):
@@ -26,6 +41,8 @@ def utterances_domain_to_df(data):
 
     # Create a Pandas DataFrame
     df = pd.DataFrame({'Utterance': utterances, 'Service': services})
+    df = service_mapping(df) # 0=restaurant, 1=hotel, 2=others
 
     return df
+
 
