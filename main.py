@@ -1,5 +1,5 @@
 import pandas as pd
-from domain_prediction_functions import load_json, utterances_domain_to_df
+from domain_prediction_functions import load_json, utterances_domain_to_df,utterances_activeintent_to_df
 
 
 
@@ -25,6 +25,9 @@ if __name__ == "__main__":
         print(f'Value {value}: Count {count}, Percentage {percentage:.2f}%')
 
     df.to_csv('utterances_domain.csv', index=False)
+
+    df = utterances_activeintent_to_df(data)
+    df.to_csv('utterances_activeintent.csv', index=False)
 
     # Step 4: Train a Predictor
     # Now, you can use the 'df' DataFrame to train your predictor, for example, using machine learning algorithms.
