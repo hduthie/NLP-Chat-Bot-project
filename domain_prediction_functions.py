@@ -67,30 +67,52 @@ def utterances_domain_to_df(data):
 
     return df
 
-
-def utterances_activeintent_to_df(data):
-
-    # Initialize empty lists to store extracted data
+def extract_hotel_dialogue_acts(data):
     utterances = []
     active_intents = []
 
-    # Extract data from each dialogue in the file
     for dialogue in data:
         for turn in dialogue['turns']:
             if 'utterance' in turn and 'frames' in turn:
                 for frame in turn['frames']:
                     if 'service' in frame and 'state' in frame:
-                        state = frame['state']
-                        active_intent_value = state.get('active_intent', '')
-                        if active_intent_value != 'NONE':
-                            utterances.append(turn['utterance'])
-                            active_intents.append(active_intent_value)
+                        service = frame['service']
+                        if service == 'hotel':
+                            state = frame['state']
+                            active_intent_value = state.get('active_intent', '')
+                            if active_intent_value != 'NONE':
+                                utterances.append(turn['utterance'])
+                                active_intents.append(active_intent_value)
 
-    # Create a Pandas DataFrame
     df = pd.DataFrame({'Utterance': utterances, 'Intent': active_intents})
-    df = intent_mapping(df) # Map the intent values
+    df = intent_mapping(df)  # Map the intent values
 
     return df
+
+def extract_restaurant_dialogue_acts(data):
+    utterances = []
+    active_intents = []
+
+    for dialogue in data:
+        for turn in dialogue['turns']:
+            if 'utterance' in turn and 'frames' in turn:
+                for frame in turn['frames']:
+                    if 'service' in frame and 'state' in frame:
+                        service = frame['service']
+                        if service == 'restaurant':
+                            state = frame['state']
+                            active_intent_value = state.get('active_intent', '')
+                            if active_intent_value != 'NONE':
+                                utterances.append(turn['utterance'])
+                                active_intents.append(active_intent_value)
+
+    df = pd.DataFrame({'Utterance': utterances, 'Intent': active_intents})
+    df = intent_mapping(df)  # Map the intent values
+
+    return df
+
+
+
 
 
 def check_diferent_intents(file):
