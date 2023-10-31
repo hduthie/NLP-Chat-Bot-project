@@ -13,7 +13,7 @@ if __name__ == "__main__":
     df = utterances_domain_to_df(data)
 
     # Step 3: Print first rows
-    print(df.head(20))
+    #print(df.head(20))
 
     value_counts = df['Service'].value_counts()
     total_count = len(df)
@@ -22,12 +22,30 @@ if __name__ == "__main__":
     # Print the results
     for value, count in value_counts.items():
         percentage = percentages[value]
-        print(f'Value {value}: Count {count}, Percentage {percentage:.2f}%')
+        #print(f'Value {value}: Count {count}, Percentage {percentage:.2f}%')
 
     df.to_csv('utterances_domain.csv', index=False)
 
     df = utterances_activeintent_to_df(data)
     df.to_csv('utterances_activeintent.csv', index=False)
 
-    # Step 4: Train a Predictor
-    # Now, you can use the 'df' DataFrame to train your predictor, for example, using machine learning algorithms.
+
+    for dialogue in data:
+        dialogue_id = dialogue['dialogue_id']
+        for turn in dialogue['turns']:
+            if turn['speaker'] == 'USER':
+                utterance = turn['utterance']
+                utterance_list = []
+                slot_values = turn['frames'][0]['state']['slot_values']  # Assuming only one frame per turn
+                words = utterance.split()
+                for word in words:
+                    found_slot = False
+                    for slot, values in slot_values.items():
+                        if any(word.lower() in value.lower() for value in values):
+                            utterance_list.append(slot)
+                            found_slot = True
+                            break
+                    if not found_slot:
+                        utterance_list.append('0')
+                print(f"Dialog ID: {dialogue_id}, Utterance: {utterance}, Utterance List: {utterance_list}")
+
